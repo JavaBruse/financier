@@ -1,6 +1,6 @@
 spring:
   datasource:
-    driver-class-name: org.h2.Driver
+    driverClassName: org.h2.Driver
     url: jdbc:h2:mem:mydatabase;MODE=PostgreSQL
     username: sa
     password:
@@ -8,10 +8,11 @@ spring:
     show-sql: true
     properties:
       hibernate:
+        ddl-auto: create-drop
         dialect: org.hibernate.dialect.H2Dialect
   h2:
     console:
-      enabled: true
+      enabled: false
   flyway:
     enable: true
     cleanOnValidationError: true

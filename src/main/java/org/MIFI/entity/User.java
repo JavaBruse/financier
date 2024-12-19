@@ -1,13 +1,16 @@
 package org.MIFI.entity;
 
+import lombok.Data;
+
 import javax.persistence.*;
 import java.util.Collection;
 
+@Data
 @Entity
 @Table(name = "users")
 public class User {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
 

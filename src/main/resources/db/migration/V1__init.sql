@@ -20,13 +20,9 @@ CREATE TABLE transactions (
                              categories_id  bigint not null references categories (id),
                              description    varchar(150) not null,
                              type           varchar(36) not null,
-                             created        double not null,
+                             created        bigint not null,
                              primary key (user_id, categories_id)
 );
-
-
-
-
 
 insert into users (name, password)
 values ('bob', '123'),
