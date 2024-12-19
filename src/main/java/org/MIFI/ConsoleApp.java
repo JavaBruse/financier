@@ -25,7 +25,7 @@ public class ConsoleApp implements CommandLineRunner {
         Scanner scanner = new Scanner(System.in);
 
         while (true) {
-            System.out.println("Введите команду:");
+            System.out.println("Добро пожаловать в приложение Финансы");
             //String command = scanner.nextLine();
             for (User user : userRepository.findAll()) {
                 System.out.println(user);

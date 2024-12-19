@@ -5,6 +5,8 @@ import org.MIFI.entity.enums.TypeOfTransaction;
 
 import jakarta.persistence.*;
 
+import java.util.Date;
+
 @Data
 @Entity
 @Table(name = "transactions")
@@ -35,8 +37,17 @@ public class Transaction {
 
     @Override
     public String toString() {
-        return  "Транзакция: [Описание: " + description + '\'' +
-                ", Тип: " + type +
-                ", Дата: " + created+ "]\n";
+        return  "Транзакция: Описание: " + description + '\'' +
+                ", Тип: " + getType(type) +
+                ", Дата: " + new Date(created)+ "\n";
+    }
+
+    private String getType(TypeOfTransaction type){
+        if (type == TypeOfTransaction.IN) {
+            return "пополнение";
+        }else{
+            return "растрата";
+        }
+
     }
 }
