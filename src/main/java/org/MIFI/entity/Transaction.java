@@ -3,7 +3,7 @@ package org.MIFI.entity;
 import lombok.Data;
 import org.MIFI.entity.enums.TypeOfTransaction;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 
 @Data
 @Entity
@@ -33,5 +33,10 @@ public class Transaction {
     private Long created;
 
 
-
+    @Override
+    public String toString() {
+        return  "Транзакция: [Описание: " + description + '\'' +
+                ", Тип: " + type +
+                ", Дата: " + created+ "]\n";
+    }
 }

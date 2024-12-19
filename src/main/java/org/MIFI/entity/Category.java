@@ -1,9 +1,10 @@
 package org.MIFI.entity;
 
 
+import jakarta.persistence.*;
 import lombok.Data;
 
-import javax.persistence.*;
+
 import java.util.Collection;
 
 @Data
@@ -22,9 +23,24 @@ public class Category {
     @Column(name = "name")
     private String name;
 
-    @Column(name = "limit")
+    @Column(name = "max_limit")
     private Double limit;
 
-    @OneToMany(mappedBy = "category")
+    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL)
     private Collection<Transaction> transactions;
+
+    @Override
+    public String toString() {
+        return "Категоря: " + name +
+                ", Лимит: " + limit + "\n" +printTransaction();
+    }
+
+    private String printTransaction(){
+        StringBuilder sb = new StringBuilder();
+        for (Transaction t:transactions) {
+            sb.append(t);
+        }
+        return sb.toString();
+    }
+
 }

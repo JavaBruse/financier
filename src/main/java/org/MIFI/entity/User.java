@@ -2,7 +2,9 @@ package org.MIFI.entity;
 
 import lombok.Data;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
+import lombok.Getter;
+
 import java.util.Collection;
 
 @Data
@@ -20,8 +22,23 @@ public class User {
     @Column(name = "password")
     private String password;
 
-    @OneToMany(mappedBy = "users", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private Collection<Transaction> transactions;
-    @OneToMany(mappedBy = "users", cascade = CascadeType.ALL)
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private Collection<Category> categories;
+
+    @Override
+    public String toString() {
+        return "Пользователь: " + name + '\n' + printCategories();
+    }
+
+    private String printCategories() {
+        StringBuilder sb = new StringBuilder();
+        for (Category t : categories) {
+            sb.append(t);
+        }
+        return sb.toString();
+    }
+
 }
