@@ -68,6 +68,7 @@
                         <exclude>
                             <groupId>org.projectlombok</groupId>
                             <artifactId>lombok</artifactId>
+                            <scope>runtime</scope>
                         </exclude>
                     </excludes>
                 </configuration>

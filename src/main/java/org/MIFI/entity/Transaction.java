@@ -34,19 +34,22 @@ public class Transaction {
     @Column(name = "created")
     private Long created;
 
+    @Column(name = "money")
+    private Double money;
 
     @Override
     public String toString() {
-        return  "Транзакция: Описание: " + description + '\'' +
+        return "              Транзакция: " + description  +
                 ", Тип: " + getType(type) +
-                ", Дата: " + new Date(created)+ "\n";
+                ", Деньги: " + money +
+                ", Дата: " + new Date(created) + "\n";
     }
 
-    private String getType(TypeOfTransaction type){
+    private String getType(TypeOfTransaction type) {
         if (type == TypeOfTransaction.IN) {
-            return "пополнение";
-        }else{
-            return "растрата";
+            return "приход";
+        } else {
+            return "расход";
         }
 
     }

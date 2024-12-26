@@ -26,18 +26,18 @@ public class Category {
     @Column(name = "max_limit")
     private Double limit;
 
-    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Collection<Transaction> transactions;
 
     @Override
     public String toString() {
-        return "Категоря: " + name +
-                ", Лимит: " + limit + "\n" +printTransaction();
+        return "    Категоря: " + name +
+                ", лимит: " + limit + "\n" + printTransaction();
     }
 
-    private String printTransaction(){
+    private String printTransaction() {
         StringBuilder sb = new StringBuilder();
-        for (Transaction t:transactions) {
+        for (Transaction t : transactions) {
             sb.append(t);
         }
         return sb.toString();

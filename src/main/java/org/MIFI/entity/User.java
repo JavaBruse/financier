@@ -1,14 +1,13 @@
 package org.MIFI.entity;
 
-import lombok.Data;
+import lombok.*;
 
 import jakarta.persistence.*;
-import lombok.Getter;
 
 import java.util.Collection;
 
-@Data
 @Entity
+@Data
 @Table(name = "users")
 public class User {
     @Id
@@ -22,10 +21,10 @@ public class User {
     @Column(name = "password")
     private String password;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Collection<Transaction> transactions;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Collection<Category> categories;
 
     @Override
