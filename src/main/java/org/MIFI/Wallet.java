@@ -4,52 +4,48 @@ import lombok.Getter;
 import org.MIFI.entity.Category;
 import org.MIFI.entity.Transaction;
 import org.MIFI.entity.User;
+import org.MIFI.service.CategoryService;
+import org.MIFI.service.TransactionService;
+import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-public interface Wallet {
+@Getter
+@Component
+public class Wallet {
+    private User user;
+    private double balance;
+    private Map<Category, Double> balances = new HashMap<>();
 
-    double getBalance();
+    private final CategoryService categoryService;
+    private final TransactionService transactionService;
 
-    Map<Category, Double> getBalances();
+    public Wallet(CategoryService categoryService, TransactionService transactionService) {
+        this.categoryService = categoryService;
+        this.transactionService = transactionService;
+    }
 
-    void reload();
 
-    final class WalletDefault implements Wallet {
-        private final User user;
-        private List<Category> categories;
-        private double balance;
-        private Map<Category, Double> balances = new HashMap<>();
-
-        public WalletDefault(User user) {
-            this.user = user;
-            this.categories = user.getCategories().stream().toList();
-            calculateBalance();
+    private void calculateBalance() {
+        this.balances.clear();
+        for (Category c : user.getCategories()) {
+            this.balances.put(c, c.getTransactions().stream().map(Transaction::getMoney).reduce(0., Double::sum));
         }
+        this.balance = this.balances.values().stream().reduce(0., Double::sum);
+    }
 
-        private void calculateBalance() {
-            balances.clear();
-            for (Category c : categories) {
-                balances.put(c, c.getTransactions().stream().map(Transaction::getMoney).reduce(0., Double::sum));
-            }
-            this.balance = this.balances.values().stream().reduce(0., Double::sum);
-        }
+    public void reload(User user) {
+        this.user = user;
+        calculateBalance();
+    }
 
-        @Override
-        public double getBalance() {
-            return this.balance;
-        }
+    public void addCategory(Category category) {
+        categoryService.addCategory(category);
+    }
 
-        @Override
-        public Map<Category, Double> getBalances() {
-            return balances;
-        }
-
-        @Override
-        public void reload() {
-            calculateBalance();
-        }
+    public void addTransaction(Transaction transaction) {
+        transactionService.addTransaction(transaction);
     }
 }
+

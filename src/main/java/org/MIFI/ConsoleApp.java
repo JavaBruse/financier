@@ -1,9 +1,9 @@
 package org.MIFI;
 
 import org.MIFI.entity.Category;
-import org.MIFI.service.CategoryService;
+import org.MIFI.entity.Transaction;
+import org.MIFI.entity.User;
 import org.MIFI.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
@@ -14,17 +14,16 @@ import java.util.Scanner;
 public class ConsoleApp implements CommandLineRunner {
 
     private final UserService userService;
-    private final CategoryService categoryService;
+    private final Wallet wallet;
 
-    @Autowired
-    public ConsoleApp(UserService serviceMaster, CategoryService categoryService) {
-        this.userService = serviceMaster;
-        this.categoryService = categoryService;
+    public ConsoleApp(UserService userService, Wallet wallet) {
+        this.userService = userService;
+        this.wallet = wallet;
     }
 
     private final Scanner scanner = new Scanner(System.in);
     private boolean authorized = false;
-    private String userName;
+    private User user;
 
     @Override
     public void run(String... args) {
@@ -46,7 +45,8 @@ public class ConsoleApp implements CommandLineRunner {
         if (userService.validateUser(name, password)) {
             System.out.println("Привет " + name);
             this.authorized = true;
-            this.userName = name;
+            user = userService.getUser(name);
+            wallet.reload(user);
         } else {
             System.out.println("Неверное имя пользователя или пороль.");
         }
@@ -54,14 +54,17 @@ public class ConsoleApp implements CommandLineRunner {
 
     private void worker() {
         String command = scanner.nextLine();
-        Wallet wallet = new Wallet.WalletDefault(userService.getUser(userName));
+        command = command.toLowerCase();
+
         switch (command) {
             case "exit":
                 authorized = false;
-                userName = null;
+                user = null;
                 return;
             case "all":
-
+                for (Category c : user.getCategories()) {
+                    System.out.println(c);
+                }
                 break;
             case "balance":
                 System.out.println(wallet.getBalance());
@@ -69,27 +72,47 @@ public class ConsoleApp implements CommandLineRunner {
             case "cat":
                 for (Map.Entry<Category, Double> v : wallet.getBalances().entrySet()) {
                     System.out.println(
-                            "Категория: " + v.getKey().getName() +
-                                    " лимит: " + v.getKey().getLimit() +
+                            "Категория: \"" + v.getKey().getName() +
+                                    "\" лимит: " + v.getKey().getLimit() +
                                     " баланс: " + v.getValue() +
                                     " итого, осталось: " + (v.getKey().getLimit() - v.getValue()));
                 }
                 break;
-            case "addCat":
-                System.out.print("Описание категории: ");
+            case "addc":
+                System.out.print("Имя категории: ");
                 String name = scanner.nextLine();
                 System.out.print("Лимит по категории: ");
                 String limit = scanner.nextLine();
                 Category category = new Category();
                 category.setName(name);
-                category.setUser(userService.getUser(userName));
+                category.setUser(user);
                 category.setLimit(Double.parseDouble(limit));
-                categoryService.addCategory(category);
-                wallet.reload();
+                wallet.addCategory(category);
+                reloadWallet();
+                break;
+            case "addt":
+                System.out.print("Название категории: ");
+                String catName = scanner.nextLine();
+                System.out.print("Описание транзакции: ");
+                String description = scanner.nextLine();
+                System.out.print("Сумма по транзакции: ");
+                String summ = scanner.nextLine();
+                Transaction transaction = new Transaction();
+                transaction.setMoney(Double.parseDouble(summ));
+                transaction.setUser(user);
+                transaction.setCategory(user.getCategories().stream().filter(x -> x.getName().equals(catName)).findFirst().get());
+                transaction.setDescription(description);
+                wallet.addTransaction(transaction);
+                reloadWallet();
                 break;
             default:
                 System.err.println("Команда: " + command + " не известна.");
         }
+    }
+
+    private void reloadWallet() {
+        user = userService.getUser(user.getName());
+        wallet.reload(userService.getUser(user.getName()));
     }
 }
 
