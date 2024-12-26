@@ -29,15 +29,6 @@ public class User {
 
     @Override
     public String toString() {
-        return "Пользователь: " + name + '\n' + printCategories();
+        return "Пользователь: " + name + '\n';
     }
-
-    private String printCategories() {
-        StringBuilder sb = new StringBuilder();
-        for (Category t : categories) {
-            sb.append(t);
-        }
-        return sb.toString();
-    }
-
 }

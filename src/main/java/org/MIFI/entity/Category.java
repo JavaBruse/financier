@@ -36,15 +36,8 @@ public class Category {
     @Override
     public String toString() {
         return "    Категоря: " + name +
-                ", лимит: " + limit + "\n" + printTransaction();
+                ", лимит: " + limit + "\n";
     }
 
-    private String printTransaction() {
-        StringBuilder sb = new StringBuilder();
-        for (Transaction t : transactions) {
-            sb.append(t);
-        }
-        return sb.toString();
-    }
 
 }
