@@ -47,7 +47,7 @@ public class Transaction {
 
     private String getType(TypeOfTransaction type) {
         if (type == TypeOfTransaction.IN) {
-            return "приход";
+            return "доход";
         } else {
             return "расход";
         }
