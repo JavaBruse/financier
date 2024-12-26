@@ -1,6 +1,8 @@
 package org.MIFI.entity;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.MIFI.entity.enums.TypeOfTransaction;
 
 import jakarta.persistence.*;
@@ -9,6 +11,8 @@ import java.util.Date;
 
 @Data
 @Entity
+@AllArgsConstructor
+@NoArgsConstructor
 @Table(name = "transactions")
 public class Transaction {
     @Id
@@ -39,7 +43,7 @@ public class Transaction {
 
     @Override
     public String toString() {
-        return "              Транзакция: " + description  +
+        return "              Транзакция: " + description +
                 ", Тип: " + getType(type) +
                 ", Деньги: " + money +
                 ", Дата: " + new Date(created) + "\n";

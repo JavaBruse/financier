@@ -20,9 +20,9 @@ public interface Wallet {
     @Getter
     final class WalletDefault implements Wallet {
         private final User user;
-        private final List<Category> categories;
+        private List<Category> categories;
         private double balance;
-        private final Map<Category, Double> balances = new HashMap<>();
+        private Map<Category, Double> balances = new HashMap<>();
 
         public WalletDefault(User user) {
             this.user = user;
@@ -50,7 +50,7 @@ public interface Wallet {
 
         @Override
         public void reload() {
-
+            calculateBalance();
         }
     }
 }
