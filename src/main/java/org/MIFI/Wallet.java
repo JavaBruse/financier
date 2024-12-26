@@ -17,7 +17,6 @@ public interface Wallet {
 
     void reload();
 
-    @Getter
     final class WalletDefault implements Wallet {
         private final User user;
         private List<Category> categories;
