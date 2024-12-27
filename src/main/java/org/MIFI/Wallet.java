@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Getter
 @Component
@@ -34,6 +35,15 @@ public class Wallet {
             throw new LimitIsOverException("Категории не наеденеы!");
         }
         return balances;
+    }
+
+    public Category getCategory(String name) {
+        Optional<Category> cat = user.getCategories().stream().filter(category -> category.getName().equals(name)).findFirst();
+        if (cat.isEmpty()) {
+            throw new NotFoundMessageException("Категория не наедена");
+        }else {
+            return cat.get();
+        }
     }
 
     public List<Transaction> getTransactionsByCategory(String categoryName) {
@@ -67,7 +77,7 @@ public class Wallet {
 
     public void addTransaction(Transaction transaction) {
         Double balancesCat = balances.get(transaction.getCategory());
-        Double limitByCat = balances.keySet().stream().filter(c -> c.equals(transaction.getCategory())).findFirst().get().getLimit();
+        Double limitByCat = transaction.getCategory().getLimit();
         if (limitByCat >= balancesCat + transaction.getMoney()) {
             transactionService.addTransaction(transaction);
         } else {

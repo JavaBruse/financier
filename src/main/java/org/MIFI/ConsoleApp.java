@@ -67,11 +67,6 @@ public class ConsoleApp implements CommandLineRunner {
                 authorized = false;
                 user = null;
                 return;
-            case "all":
-                for (Category c : wallet.getBalances().keySet()) {
-                    System.out.println(c);
-                }
-                break;
             case "balance":
                 System.out.println(wallet.getBalance());
                 break;
@@ -98,7 +93,7 @@ public class ConsoleApp implements CommandLineRunner {
                 break;
             case "addt":
                 System.out.print("Название категории: ");
-                String catName = scanner.nextLine();
+                Category cat = wallet.getCategory(scanner.nextLine());
                 System.out.print("Описание транзакции: ");
                 String description = scanner.nextLine();
                 System.out.print("Сумма по транзакции: ");
@@ -106,15 +101,16 @@ public class ConsoleApp implements CommandLineRunner {
                 Transaction transaction = new Transaction();
                 transaction.setMoney(Double.parseDouble(summ));
                 transaction.setUser(user);
-                transaction.setCategory(user.getCategories().stream().filter(x -> x.getName().equals(catName)).findFirst().get());
+                transaction.setCategory(cat);
                 transaction.setDescription(description);
                 wallet.addTransaction(transaction);
                 reloadWallet();
                 break;
             case "gett":
                 System.out.print("Название категории: ");
-                catName = scanner.nextLine();
-                wallet.getTransactionsByCategory(catName);
+                String catName = scanner.nextLine();
+                System.out.println(wallet.getTransactionsByCategory(catName));
+                break;
             default:
                 System.err.println("Команда: " + command + " не известна.");
         }

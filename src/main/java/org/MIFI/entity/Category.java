@@ -4,6 +4,7 @@ package org.MIFI.entity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 
@@ -14,6 +15,7 @@ import java.util.Collection;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "categories")
+@EqualsAndHashCode(of = "name")
 public class Category {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -38,6 +40,5 @@ public class Category {
         return "    Категоря: " + name +
                 ", лимит: " + limit + "\n";
     }
-
 
 }
