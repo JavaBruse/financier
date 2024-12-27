@@ -3,6 +3,7 @@ package org.MIFI;
 import org.MIFI.entity.Category;
 import org.MIFI.entity.Transaction;
 import org.MIFI.entity.User;
+import org.MIFI.exceptions.NotFoundMessageException;
 import org.MIFI.service.UserService;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
@@ -26,18 +27,23 @@ public class ConsoleApp implements CommandLineRunner {
     private User user;
 
     @Override
-    public void run(String... args) {
+    public void run(String... args) throws InterruptedException {
         System.out.println("Добро пожаловать в приложение Финансы");
         while (true) {
-            if (!authorized) {
-                auth();
-            } else {
-                worker();
+            try {
+                if (!authorized) {
+                    auth();
+                } else {
+                    worker();
+                }
+            } catch (RuntimeException e) {
+                System.err.println(e.getMessage());
+                Thread.sleep(100);
             }
         }
     }
 
-    private void auth() {
+    private void auth() throws RuntimeException {
         System.out.print("Введите login: ");
         String name = scanner.nextLine();
         System.out.print("Введите password: ");
@@ -48,11 +54,11 @@ public class ConsoleApp implements CommandLineRunner {
             user = userService.getUser(name);
             wallet.reload(user);
         } else {
-            System.out.println("Неверное имя пользователя или пороль.");
+            throw new NotFoundMessageException("Неверное имя пользователя или пороль.");
         }
     }
 
-    private void worker() {
+    private void worker() throws RuntimeException {
         String command = scanner.nextLine();
         command = command.toLowerCase();
 
@@ -62,7 +68,7 @@ public class ConsoleApp implements CommandLineRunner {
                 user = null;
                 return;
             case "all":
-                for (Category c : user.getCategories()) {
+                for (Category c : wallet.getBalances().keySet()) {
                     System.out.println(c);
                 }
                 break;
@@ -72,9 +78,9 @@ public class ConsoleApp implements CommandLineRunner {
             case "cat":
                 for (Map.Entry<Category, Double> v : wallet.getBalances().entrySet()) {
                     System.out.println(
-                            "Категория: \"" + v.getKey().getName() +
-                                    "\" лимит: " + v.getKey().getLimit() +
-                                    " баланс: " + v.getValue() +
+                            "\"" + v.getKey().getName() +
+                                    "\": " + v.getKey().getLimit() +
+                                    " сумма по транзакциям: " + v.getValue() +
                                     " итого, осталось: " + (v.getKey().getLimit() - v.getValue()));
                 }
                 break;
@@ -105,6 +111,10 @@ public class ConsoleApp implements CommandLineRunner {
                 wallet.addTransaction(transaction);
                 reloadWallet();
                 break;
+            case "gett":
+                System.out.print("Название категории: ");
+                catName = scanner.nextLine();
+                wallet.getTransactionsByCategory(catName);
             default:
                 System.err.println("Команда: " + command + " не известна.");
         }
