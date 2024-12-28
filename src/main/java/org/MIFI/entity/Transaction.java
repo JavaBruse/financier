@@ -55,6 +55,14 @@ public class Transaction {
         } else {
             return "расход";
         }
+    }
 
+    public void setMoney(Double money) {
+        this.money = money;
+        if (money > 0) {
+            this.type = TypeOfTransaction.IN;
+        } else {
+            this.type = TypeOfTransaction.OUT;
+        }
     }
 }

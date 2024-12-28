@@ -10,10 +10,7 @@ import org.MIFI.service.CategoryService;
 import org.MIFI.service.TransactionService;
 import org.springframework.stereotype.Component;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @Getter
 @Component
@@ -41,7 +38,7 @@ public class Wallet {
         Optional<Category> cat = user.getCategories().stream().filter(category -> category.getName().equals(name)).findFirst();
         if (cat.isEmpty()) {
             throw new NotFoundMessageException("Категория не наедена");
-        }else {
+        } else {
             return cat.get();
         }
     }
@@ -78,11 +75,34 @@ public class Wallet {
     public void addTransaction(Transaction transaction) {
         Double balancesCat = balances.get(transaction.getCategory());
         Double limitByCat = transaction.getCategory().getLimit();
-        if (limitByCat >= balancesCat + transaction.getMoney()) {
+        if (0 <= limitByCat + (balancesCat + transaction.getMoney())) {
             transactionService.addTransaction(transaction);
         } else {
             throw new LimitIsOverException("Лимит превышен, транзакция не может быть проведена.");
         }
+    }
+
+    public List<String> getExpenses(){
+        List<String>  expenses = new ArrayList<>();
+        for (Map.Entry<Category, Double> v : this.getBalances().entrySet()) {
+            if (v.getKey().getLimit() == 0) continue;
+            expenses.add("    " + v.getKey().getName() + " " + v.getValue());
+        }
+        if (expenses.isEmpty()) {
+            throw new NotFoundMessageException("Расходы не наедены");
+        }
+        return expenses;
+    }
+    public List<String>  getIncome(){
+        List<String>  expenses = new ArrayList<>();
+        for (Map.Entry<Category, Double> v : this.getBalances().entrySet()) {
+            if (v.getKey().getLimit() != 0) continue;
+            expenses.add("    " + v.getKey().getName() + " " + v.getValue());
+        }
+        if (expenses.isEmpty()) {
+            throw new NotFoundMessageException("Доходы не наедены");
+        }
+        return expenses;
     }
 }
 

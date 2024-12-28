@@ -63,23 +63,22 @@ public class ConsoleApp implements CommandLineRunner {
         command = command.toLowerCase();
 
         switch (command) {
-            case "exit":
+            case "exit":  // выход из учетной записи
                 authorized = false;
                 user = null;
                 return;
-            case "balance":
+            case "balance": // общий баланс
                 System.out.println(wallet.getBalance());
                 break;
-            case "cat":
+            case "budgets": // Бюджеты по всем категориям
                 for (Map.Entry<Category, Double> v : wallet.getBalances().entrySet()) {
-                    System.out.println(
-                            "\"" + v.getKey().getName() +
-                                    "\": " + v.getKey().getLimit() +
-                                    " сумма по транзакциям: " + v.getValue() +
-                                    " итого, осталось: " + (v.getKey().getLimit() - v.getValue()));
+                    if (v.getKey().getLimit() == 0) continue;
+                    System.out.println(v.getKey().getName() + ": " + v.getKey().getLimit() +
+                            " сумма по транзакциям: " + v.getValue() +
+                            " итого, осталось: " + (v.getKey().getLimit() + v.getValue()));
                 }
                 break;
-            case "addc":
+            case "addc": // добавтиь категорию, лимит 0, условно не выделяет её в отдельную категорию.
                 System.out.print("Имя категории: ");
                 String name = scanner.nextLine();
                 System.out.print("Лимит по категории: ");
@@ -91,7 +90,7 @@ public class ConsoleApp implements CommandLineRunner {
                 wallet.addCategory(category);
                 reloadWallet();
                 break;
-            case "addt":
+            case "addt": // добавить транзакцию в категорию
                 System.out.print("Название категории: ");
                 Category cat = wallet.getCategory(scanner.nextLine());
                 System.out.print("Описание транзакции: ");
@@ -106,10 +105,24 @@ public class ConsoleApp implements CommandLineRunner {
                 wallet.addTransaction(transaction);
                 reloadWallet();
                 break;
-            case "gett":
+            case "gett": // получить транзакции по категории
                 System.out.print("Название категории: ");
                 String catName = scanner.nextLine();
-                System.out.println(wallet.getTransactionsByCategory(catName));
+                for (Transaction t : wallet.getTransactionsByCategory(catName)) {
+                    System.out.println(t);
+                }
+                break;
+            case "expenses": //расходы
+                System.out.println("Расходы");
+                for (String s : wallet.getExpenses()) {
+                    System.out.println(s);
+                }
+                break;
+            case "income": //доходы
+                System.out.println("Доходы");
+                for (String s : wallet.getIncome()) {
+                    System.out.println(s);
+                }
                 break;
             default:
                 System.err.println("Команда: " + command + " не известна.");
