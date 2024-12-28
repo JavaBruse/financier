@@ -6,9 +6,10 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import org.MIFI.exceptions.NotFoundMessageException;
 
 
-import java.util.Collection;
+import java.util.*;
 
 @Data
 @Entity
@@ -39,6 +40,42 @@ public class Category {
     public String toString() {
         return "    Категоря: " + name +
                 ", лимит: " + limit + "\n";
+    }
+
+    public Category getExpenses() {
+        List<Transaction> l = getTransExp();
+        Category category = new Category();
+        category.setName(this.getName());
+        category.setTransactions(l);
+        return category;
+    }
+
+    public Category getIncome() {
+        List<Transaction> l = getTransInc();
+        Category category = new Category();
+        category.setName(this.getName());
+        category.setTransactions(l);
+        return category;
+    }
+
+    private List<Transaction> getTransExp() {
+        List<Transaction> list = new ArrayList<>();
+        for (Transaction t : transactions) {
+            if (t.getExpenses() != null) {
+                list.add(t.getExpenses());
+            }
+        }
+        return list;
+    }
+
+    private List<Transaction> getTransInc() {
+        List<Transaction> list = new ArrayList<>();
+        for (Transaction t : transactions) {
+            if (t.getIncome() != null) {
+                list.add(t.getIncome());
+            }
+        }
+        return list;
     }
 
 }

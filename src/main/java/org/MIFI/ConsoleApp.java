@@ -8,6 +8,7 @@ import org.MIFI.service.UserService;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 
@@ -71,6 +72,7 @@ public class ConsoleApp implements CommandLineRunner {
                 System.out.println(wallet.getBalance());
                 break;
             case "budgets": // Бюджеты по всем категориям
+                System.out.println("Бюджеты:");
                 for (Map.Entry<Category, Double> v : wallet.getBalances().entrySet()) {
                     if (v.getKey().getLimit() == 0) continue;
                     System.out.println(v.getKey().getName() + ": " + v.getKey().getLimit() +
@@ -114,15 +116,14 @@ public class ConsoleApp implements CommandLineRunner {
                 break;
             case "expenses": //расходы
                 System.out.println("Расходы");
-                for (String s : wallet.getExpenses()) {
-                    System.out.println(s);
-                }
+                printCategoryAndTransactions(wallet.getExpenses());
                 break;
             case "income": //доходы
                 System.out.println("Доходы");
-                for (String s : wallet.getIncome()) {
-                    System.out.println(s);
-                }
+                printCategoryAndTransactions(wallet.getIncome());
+                break;
+            case "calculate":
+
                 break;
             default:
                 System.err.println("Команда: " + command + " не известна.");
@@ -132,6 +133,15 @@ public class ConsoleApp implements CommandLineRunner {
     private void reloadWallet() {
         user = userService.getUser(user.getName());
         wallet.reload(userService.getUser(user.getName()));
+    }
+
+    private void printCategoryAndTransactions(List<Category> list) {
+        for (Category c : list) {
+            System.out.println(c.getName());
+            for (Transaction t : c.getTransactions()) {
+                System.out.println(t);
+            }
+        }
     }
 }
 

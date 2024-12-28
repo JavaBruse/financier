@@ -82,27 +82,36 @@ public class Wallet {
         }
     }
 
-    public List<String> getExpenses(){
-        List<String>  expenses = new ArrayList<>();
-        for (Map.Entry<Category, Double> v : this.getBalances().entrySet()) {
-            if (v.getKey().getLimit() == 0) continue;
-            expenses.add("    " + v.getKey().getName() + " " + v.getValue());
+    public List<Category> getExpenses() {
+        List<Category> expenses = new ArrayList<>();
+        for (Map.Entry<Category, Double> v : this.balances.entrySet()) {
+            expenses.add(v.getKey().getExpenses());
         }
-        if (expenses.isEmpty()) {
-            throw new NotFoundMessageException("Расходы не наедены");
-        }
-        return expenses;
+        return checkFromInit(expenses, "Расходов нет!");
     }
-    public List<String>  getIncome(){
-        List<String>  expenses = new ArrayList<>();
-        for (Map.Entry<Category, Double> v : this.getBalances().entrySet()) {
-            if (v.getKey().getLimit() != 0) continue;
-            expenses.add("    " + v.getKey().getName() + " " + v.getValue());
+
+    public List<Category> getIncome() {
+        List<Category> expenses = new ArrayList<>();
+        for (Map.Entry<Category, Double> v : this.balances.entrySet()) {
+            expenses.add(v.getKey().getIncome());
         }
-        if (expenses.isEmpty()) {
-            throw new NotFoundMessageException("Доходы не наедены");
+        return checkFromInit(expenses, "Доходов нет!");
+    }
+
+    private List<Category> checkFromInit(List<Category> list, String message) {
+        try {
+            for (int i = 0; i < list.size(); i++) {
+                if (list.get(i).getTransactions().isEmpty()) {
+                    list.remove(list.get(i));
+                    i--;
+                }
+            }
+            if (list.isEmpty()) throw new NotFoundMessageException(message);
+            return list;
+        } catch (RuntimeException e) {
+            throw new NotFoundMessageException(message);
         }
-        return expenses;
+
     }
 }
 

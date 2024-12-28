@@ -43,10 +43,26 @@ public class Transaction {
 
     @Override
     public String toString() {
-        return "              Транзакция: " + description +
+        return "  Транзакция: " + description +
                 ", Тип: " + getType(type) +
                 ", Деньги: " + money +
                 ", Дата: " + new Date(created) + "\n";
+    }
+
+    public Transaction getExpenses() {
+        if (this.type == TypeOfTransaction.OUT) {
+            return this;
+        } else {
+            return null;
+        }
+    }
+
+    public Transaction getIncome() {
+        if (this.type == TypeOfTransaction.IN) {
+            return this;
+        } else {
+            return null;
+        }
     }
 
     private String getType(TypeOfTransaction type) {
