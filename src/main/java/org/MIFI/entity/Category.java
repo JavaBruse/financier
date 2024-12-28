@@ -38,8 +38,11 @@ public class Category {
 
     @Override
     public String toString() {
-        return "    Категоря: " + name +
-                ", лимит: " + limit + "\n";
+        return "    Категоря: " + name + getLimitText() + "\n";
+    }
+
+    private String getLimitText() {
+        return this.limit > 0 ? ", лимит: " + limit : "";
     }
 
     public Category getExpenses() {

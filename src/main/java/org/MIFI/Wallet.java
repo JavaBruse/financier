@@ -10,6 +10,7 @@ import org.MIFI.service.CategoryService;
 import org.MIFI.service.TransactionService;
 import org.springframework.stereotype.Component;
 
+import java.awt.event.WindowFocusListener;
 import java.util.*;
 
 @Getter
@@ -75,7 +76,7 @@ public class Wallet {
     public void addTransaction(Transaction transaction) {
         Double balancesCat = balances.get(transaction.getCategory());
         Double limitByCat = transaction.getCategory().getLimit();
-        if (0 <= limitByCat + (balancesCat + transaction.getMoney())) {
+        if (0 <= limitByCat + (balancesCat + transaction.getMoney()) || (limitByCat == 0 && transaction.getMoney() > 0)) {
             transactionService.addTransaction(transaction);
         } else {
             throw new LimitIsOverException("Лимит превышен, транзакция не может быть проведена.");

@@ -7,7 +7,9 @@ import org.MIFI.entity.enums.TypeOfTransaction;
 
 import jakarta.persistence.*;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 @Data
 @Entity
@@ -44,9 +46,8 @@ public class Transaction {
     @Override
     public String toString() {
         return "  Транзакция: " + description +
-                ", Тип: " + getType(type) +
                 ", Деньги: " + money +
-                ", Дата: " + new Date(created) + "\n";
+                ", Дата: " + getDateString() + "\n";
     }
 
     public Transaction getExpenses() {
@@ -80,5 +81,9 @@ public class Transaction {
         } else {
             this.type = TypeOfTransaction.OUT;
         }
+    }
+
+    public String getDateString() {
+        return new SimpleDateFormat("dd.MM.yyг.").format(created);
     }
 }

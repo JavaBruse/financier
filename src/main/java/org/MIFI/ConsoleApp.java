@@ -139,7 +139,7 @@ public class ConsoleApp implements CommandLineRunner {
         for (Category c : list) {
             System.out.println(c.getName());
             for (Transaction t : c.getTransactions()) {
-                System.out.println(t);
+                System.out.print(t);
             }
         }
     }
