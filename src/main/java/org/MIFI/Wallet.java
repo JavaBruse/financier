@@ -30,7 +30,7 @@ public class Wallet {
 
     public Map<Category, Double> getBalances() {
         if (balances.isEmpty()) {
-            throw new LimitIsOverException("Категории не наеденеы!");
+            throw new LimitIsOverException("Категории не наедены!");
         }
         return balances;
     }
