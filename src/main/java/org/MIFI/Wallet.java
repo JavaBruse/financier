@@ -1,6 +1,5 @@
 package org.MIFI;
 
-import lombok.Getter;
 import org.MIFI.entity.Category;
 import org.MIFI.entity.Transaction;
 import org.MIFI.entity.User;
@@ -10,10 +9,8 @@ import org.MIFI.service.CategoryService;
 import org.MIFI.service.TransactionService;
 import org.springframework.stereotype.Component;
 
-import java.awt.event.WindowFocusListener;
 import java.util.*;
 
-@Getter
 @Component
 public class Wallet {
     private User user;
@@ -33,6 +30,22 @@ public class Wallet {
             throw new LimitIsOverException("Категории не наедены!");
         }
         return balances;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public double getBalance() {
+        return balance;
+    }
+
+    public CategoryService getCategoryService() {
+        return categoryService;
+    }
+
+    public TransactionService getTransactionService() {
+        return transactionService;
     }
 
     public Category getCategory(String name) {

@@ -1,13 +1,9 @@
 package org.MIFI.entity;
 
-import lombok.*;
-
 import jakarta.persistence.*;
-
 import java.util.Collection;
 
 @Entity
-@Data
 @Table(name = "users")
 public class User {
     @Id
@@ -30,5 +26,45 @@ public class User {
     @Override
     public String toString() {
         return "Пользователь: " + name + '\n';
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public Collection<Transaction> getTransactions() {
+        return transactions;
+    }
+
+    public void setTransactions(Collection<Transaction> transactions) {
+        this.transactions = transactions;
+    }
+
+    public Collection<Category> getCategories() {
+        return categories;
+    }
+
+    public void setCategories(Collection<Category> categories) {
+        this.categories = categories;
     }
 }

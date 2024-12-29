@@ -1,20 +1,10 @@
 package org.MIFI.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 import org.MIFI.entity.enums.TypeOfTransaction;
-
 import jakarta.persistence.*;
-
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.concurrent.TimeUnit;
 
-@Data
 @Entity
-@AllArgsConstructor
-@NoArgsConstructor
 @Table(name = "transactions")
 public class Transaction {
     @Id
@@ -85,5 +75,57 @@ public class Transaction {
 
     public String getDateString() {
         return new SimpleDateFormat("dd.MM.yyг.").format(created);
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public Category getCategory() {
+        return category;
+    }
+
+    public void setCategory(Category category) {
+        this.category = category;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public TypeOfTransaction getType() {
+        return type;
+    }
+
+    public void setType(TypeOfTransaction type) {
+        this.type = type;
+    }
+
+    public Long getCreated() {
+        return created;
+    }
+
+    public void setCreated(Long created) {
+        this.created = created;
+    }
+
+    public Double getMoney() {
+        return money;
     }
 }

@@ -2,21 +2,13 @@ package org.MIFI.entity;
 
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
-import org.MIFI.exceptions.NotFoundMessageException;
+
 
 
 import java.util.*;
 
-@Data
 @Entity
-@AllArgsConstructor
-@NoArgsConstructor
 @Table(name = "categories")
-@EqualsAndHashCode(of = "name")
 public class Category {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -81,4 +73,56 @@ public class Category {
         return list;
     }
 
+    @Override
+    public boolean equals(Object object) {
+        if (this == object) return true;
+        if (object == null || getClass() != object.getClass()) return false;
+        Category category = (Category) object;
+        return Objects.equals(name, category.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(name);
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public Double getLimit() {
+        return limit;
+    }
+
+    public void setLimit(Double limit) {
+        this.limit = limit;
+    }
+
+    public Collection<Transaction> getTransactions() {
+        return transactions;
+    }
+
+    public void setTransactions(Collection<Transaction> transactions) {
+        this.transactions = transactions;
+    }
 }

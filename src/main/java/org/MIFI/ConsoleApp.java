@@ -77,7 +77,7 @@ public class ConsoleApp implements CommandLineRunner {
                             "expenses       - все расходы.\n" +
                             "income         - все доходы.\n" +
                             "calculate      - подсчет всего кошелька.\n" +
-                            "exit           - выход из учетной записи: " + user.getName());
+                            "exit           - выход из учетной записи.");
         } else {
             System.out.println(
                     "help           - доступные команды.\n" +
