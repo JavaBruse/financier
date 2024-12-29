@@ -3,6 +3,7 @@ package org.MIFI;
 import org.MIFI.entity.Category;
 import org.MIFI.entity.Transaction;
 import org.MIFI.entity.User;
+import org.MIFI.exceptions.LimitIsOverException;
 import org.MIFI.exceptions.NotFoundMessageException;
 import org.MIFI.service.UserService;
 import org.springframework.boot.CommandLineRunner;
@@ -33,7 +34,8 @@ public class ConsoleApp implements CommandLineRunner {
         while (true) {
             try {
                 if (!authorized) {
-                    auth();
+                    printHelp();
+                    entrance();
                 } else {
                     worker();
                 }
@@ -42,6 +44,64 @@ public class ConsoleApp implements CommandLineRunner {
                 Thread.sleep(100);
             }
         }
+    }
+
+    private void entrance() throws RuntimeException {
+        String command = scanner.nextLine();
+        switch (command) {
+            case "help":
+                break;
+            case "auth":
+                auth();
+                break;
+            case "reg":
+                registration();
+                break;
+            case "exit":
+                System.exit(0);
+                break;
+            default:
+                System.err.println("Команда: " + command + " не известна.");
+        }
+    }
+
+    private void printHelp() {
+        if (authorized) {
+            System.out.println(
+                    "help           - доступные команды.\n" +
+                            "balance        - общий баланс доходов и расходов.\n" +
+                            "budgets        - бюджет по категориям\n" +
+                            "addc           - добавить категории.\n" +
+                            "addt           - добавить транзакцию в категорию.\n" +
+                            "gett           - получить транзакции по категории.\n" +
+                            "expenses       - все расходы.\n" +
+                            "income         - все доходы.\n" +
+                            "calculate      - подсчет всего кошелька.\n" +
+                            "exit           - выход из учетной записи: " + user.getName());
+        } else {
+            System.out.println(
+                    "help           - доступные команды.\n" +
+                            "auth           - авторизация по логину,паролю.\n" +
+                            "reg            - регистрация нового пользователя\n" +
+                            "exit           - выход их приложения");
+        }
+    }
+
+    private void registration() throws RuntimeException {
+        System.out.print("Придумайте login: ");
+        String name = scanner.nextLine();
+        if (userService.userExistByName(name)) {
+            throw new LimitIsOverException("Пользователь существует, попробуйте войти!");
+        }
+        System.out.print("Придумайте password: ");
+        String password = scanner.nextLine();
+        user = new User();
+        user.setName(name);
+        user.setPassword(password);
+        userService.addUser(user);
+        user = userService.getUser(user.getName());
+        wallet.reload(user);
+        authorized = true;
     }
 
     private void auth() throws RuntimeException {
@@ -73,12 +133,7 @@ public class ConsoleApp implements CommandLineRunner {
                 break;
             case "budgets": // Бюджеты по всем категориям
                 System.out.println("Бюджеты:");
-                for (Map.Entry<Category, Double> v : wallet.getBalances().entrySet()) {
-                    if (v.getKey().getLimit() == 0) continue;
-                    System.out.println(v.getKey().getName() + ": " + v.getKey().getLimit() +
-                            " сумма по транзакциям: " + v.getValue() +
-                            " итого, осталось: " + (v.getKey().getLimit() + v.getValue()));
-                }
+                budgets();
                 break;
             case "addc": // добавтиь категорию, лимит 0, условно не выделяет её в отдельную категорию.
                 System.out.print("Имя категории: ");
@@ -123,7 +178,17 @@ public class ConsoleApp implements CommandLineRunner {
                 printCategoryAndTransactions(wallet.getIncome());
                 break;
             case "calculate":
-
+                System.out.println("Общий доход: " + getSum(wallet.getIncome()));
+                System.out.println("Доходы по категориям: ");
+                printCategoryAndTransactions(wallet.getIncome());
+                System.out.println("Общие раходы: " + getSum(wallet.getExpenses()));
+                System.out.println("Расходы по категориям: ");
+                printCategoryAndTransactions(wallet.getExpenses());
+                System.out.println("Бюджет по категориям: ");
+                budgets();
+                break;
+            case "help":
+                printHelp();
                 break;
             default:
                 System.err.println("Команда: " + command + " не известна.");
@@ -141,6 +206,19 @@ public class ConsoleApp implements CommandLineRunner {
             for (Transaction t : c.getTransactions()) {
                 System.out.print(t);
             }
+        }
+    }
+
+    private double getSum(List<Category> list) {
+        return list.stream().flatMap(category -> category.getTransactions().stream()).mapToDouble(Transaction::getMoney).sum();
+    }
+
+    private void budgets() {
+        for (Map.Entry<Category, Double> v : wallet.getBalances().entrySet()) {
+            if (v.getKey().getLimit() == 0) continue;
+            System.out.println(v.getKey().getName() + ": " + v.getKey().getLimit() +
+                    " сумма по транзакциям: " + v.getValue() +
+                    " итого, осталось: " + (v.getKey().getLimit() + v.getValue()));
         }
     }
 }
