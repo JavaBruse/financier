@@ -4,8 +4,14 @@
 mvn clean install
 ```
 
-1. Хранение данных
+Для использвоания приложения, слует иметь в виду, что тип транзакции определеяется по знаку. 
 
+Если число отрицательное, то это расходы, если положительное то это доходы.
+```shell
+Транзакция: Премия, Деньги: 3000.0, Дата: 29.12.24г.
+Транзакция: Заплатил коммуналку, Деньги: -3000.0, Дата: 29.12.24г.
+```
+1. Хранение данных
     Все данные должны храниться в памяти приложения.
 
 В приложении подключена БД, PostgreSQL, по org.h2.Driver, url: jdbc:h2:mem:mydatabase;MODE=PostgreSQL
@@ -250,22 +256,28 @@ income
 
 Есть две ошибки, одна на превышение доходов, над расходами, вторая превышение лимита по категории.
 ```java
-public void addTransaction(Transaction transaction) {
-   Double balancesCat = balances.get(transaction.getCategory());
-   Double limitByCat = transaction.getCategory().getLimit();
-   if (balance < Math.abs(transaction.getMoney())) {
-      transactionService.addTransaction(transaction);
-      throw new LimitIsOverException("Расходы превысили доходы, но транзакция проведена");
-   }
-   if (0 <= limitByCat + (balancesCat + transaction.getMoney()) || (limitByCat == 0 && transaction.getMoney() > 0)) {
-      transactionService.addTransaction(transaction);
-   } else {
-      transactionService.addTransaction(transaction);
-      throw new LimitIsOverException("Лимит превышен!, но транзакция проведена.");
-   }
+    public void addTransaction(Transaction transaction) {
+    Double balancesCat = balances.get(transaction.getCategory());
+    Double limitByCat = transaction.getCategory().getLimit();
+    if (limitByCat == 0) {
+        if (balance < Math.abs(transaction.getMoney()) && transaction.getMoney() < 0) {
+            transactionService.addTransaction(transaction);
+            throw new LimitIsOverException("Расходы превысили доходы, но транзакция проведена"); // для доходной категории с 0
+        }
+        transactionService.addTransaction(transaction);
+    }
+
+    if (balance < Math.abs(transaction.getMoney())) { // для расходны категорий
+        transactionService.addTransaction(transaction);
+        throw new LimitIsOverException("Расходы превысили доходы, но транзакция проведена");
+    } else if (0 < limitByCat + (balancesCat + transaction.getMoney())) {
+        transactionService.addTransaction(transaction);
+    } else {
+        transactionService.addTransaction(transaction);
+        throw new LimitIsOverException("Лимит превышен!, но транзакция проведена.");
+    }
 }
 ```
-
 
 9. Сохранение данных:
 

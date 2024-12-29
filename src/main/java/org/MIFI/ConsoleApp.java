@@ -166,7 +166,7 @@ public class ConsoleApp implements CommandLineRunner {
                 System.out.print("Название категории: ");
                 String catName = scanner.nextLine();
                 for (Transaction t : wallet.getTransactionsByCategory(catName)) {
-                    System.out.println(t);
+                    System.out.print(t);
                 }
                 break;
             case "expenses": //расходы

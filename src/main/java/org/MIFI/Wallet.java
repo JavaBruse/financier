@@ -78,11 +78,18 @@ public class Wallet {
     public void addTransaction(Transaction transaction) {
         Double balancesCat = balances.get(transaction.getCategory());
         Double limitByCat = transaction.getCategory().getLimit();
+        if (limitByCat == 0) {
+            if (balance < Math.abs(transaction.getMoney()) && transaction.getMoney() < 0) {
+                transactionService.addTransaction(transaction);
+                throw new LimitIsOverException("Расходы превысили доходы, но транзакция проведена");
+            }
+            transactionService.addTransaction(transaction);
+        }
+
         if (balance < Math.abs(transaction.getMoney())) {
             transactionService.addTransaction(transaction);
             throw new LimitIsOverException("Расходы превысили доходы, но транзакция проведена");
-        }
-        if (0 <= limitByCat + (balancesCat + transaction.getMoney()) || (limitByCat == 0 && transaction.getMoney() > 0)) {
+        } else if (0 < limitByCat + (balancesCat + transaction.getMoney())) {
             transactionService.addTransaction(transaction);
         } else {
             transactionService.addTransaction(transaction);
