@@ -32,20 +32,9 @@ public class Wallet {
         return balances;
     }
 
-    public User getUser() {
-        return user;
-    }
 
     public double getBalance() {
         return balance;
-    }
-
-    public CategoryService getCategoryService() {
-        return categoryService;
-    }
-
-    public TransactionService getTransactionService() {
-        return transactionService;
     }
 
     public Category getCategory(String name) {

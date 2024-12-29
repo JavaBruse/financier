@@ -28,14 +28,6 @@ public class User {
         return "Пользователь: " + name + '\n';
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
     public String getName() {
         return name;
     }
@@ -56,15 +48,8 @@ public class User {
         return transactions;
     }
 
-    public void setTransactions(Collection<Transaction> transactions) {
-        this.transactions = transactions;
-    }
-
     public Collection<Category> getCategories() {
         return categories;
     }
 
-    public void setCategories(Collection<Category> categories) {
-        this.categories = categories;
-    }
 }

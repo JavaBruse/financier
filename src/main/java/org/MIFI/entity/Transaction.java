@@ -56,14 +56,6 @@ public class Transaction {
         }
     }
 
-    private String getType(TypeOfTransaction type) {
-        if (type == TypeOfTransaction.IN) {
-            return "доход";
-        } else {
-            return "расход";
-        }
-    }
-
     public void setMoney(Double money) {
         this.money = money;
         if (money > 0) {
@@ -75,18 +67,6 @@ public class Transaction {
 
     public String getDateString() {
         return new SimpleDateFormat("dd.MM.yyг.").format(created);
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public User getUser() {
-        return user;
     }
 
     public void setUser(User user) {
@@ -101,24 +81,12 @@ public class Transaction {
         this.category = category;
     }
 
-    public String getDescription() {
-        return description;
-    }
-
     public void setDescription(String description) {
         this.description = description;
     }
 
-    public TypeOfTransaction getType() {
-        return type;
-    }
-
     public void setType(TypeOfTransaction type) {
         this.type = type;
-    }
-
-    public Long getCreated() {
-        return created;
     }
 
     public void setCreated(Long created) {
