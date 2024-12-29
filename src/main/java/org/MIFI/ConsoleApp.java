@@ -132,7 +132,6 @@ public class ConsoleApp implements CommandLineRunner {
                 System.out.println(wallet.getBalance());
                 break;
             case "budgets": // Бюджеты по всем категориям
-                System.out.println("Бюджеты:");
                 budgets();
                 break;
             case "addc": // добавтиь категорию, лимит 0, условно не выделяет её в отдельную категорию.
@@ -178,14 +177,7 @@ public class ConsoleApp implements CommandLineRunner {
                 printCategoryAndTransactions(wallet.getIncome());
                 break;
             case "calculate":
-                System.out.println("Общий доход: " + getSum(wallet.getIncome()));
-                System.out.println("Доходы по категориям: ");
-                printCategoryAndTransactions(wallet.getIncome());
-                System.out.println("Общие раходы: " + getSum(wallet.getExpenses()));
-                System.out.println("Расходы по категориям: ");
-                printCategoryAndTransactions(wallet.getExpenses());
-                System.out.println("Бюджет по категориям: ");
-                budgets();
+                calculate();
                 break;
             case "help":
                 printHelp();
@@ -202,9 +194,9 @@ public class ConsoleApp implements CommandLineRunner {
 
     private void printCategoryAndTransactions(List<Category> list) {
         for (Category c : list) {
-            System.out.println(c.getName());
+            System.out.println("    " + c.getName());
             for (Transaction t : c.getTransactions()) {
-                System.out.print(t);
+                System.out.print("          " + t);
             }
         }
     }
@@ -214,11 +206,35 @@ public class ConsoleApp implements CommandLineRunner {
     }
 
     private void budgets() {
-        for (Map.Entry<Category, Double> v : wallet.getBalances().entrySet()) {
+        Map<Category, Double> map = wallet.getBalances();
+        System.out.println("Бюджет по категориям: ");
+        for (Map.Entry<Category, Double> v : map.entrySet()) {
             if (v.getKey().getLimit() == 0) continue;
-            System.out.println(v.getKey().getName() + ": " + v.getKey().getLimit() +
+            System.out.println("    "+v.getKey().getName() + ": " + v.getKey().getLimit() +
                     " сумма по транзакциям: " + v.getValue() +
                     " итого, осталось: " + (v.getKey().getLimit() + v.getValue()));
+        }
+    }
+
+    private void calculate() {
+        try {
+            System.out.println("Общий доход: " + getSum(wallet.getIncome()));
+            System.out.println("Доходы по категориям: ");
+            printCategoryAndTransactions(wallet.getIncome());
+        } catch (RuntimeException e) {
+            System.err.println(e.getMessage());
+        }
+        try {
+            System.out.println("Общие раходы: " + getSum(wallet.getExpenses()));
+            System.out.println("Расходы по категориям: ");
+            printCategoryAndTransactions(wallet.getExpenses());
+        } catch (RuntimeException e) {
+            System.err.println(e.getMessage());
+        }
+        try {
+            budgets();
+        } catch (RuntimeException e) {
+            System.err.println(e.getMessage());
         }
     }
 }
