@@ -72,7 +72,7 @@ public class Wallet {
     }
 
     public void addCategory(Category category) {
-        if (categoryService.categoryExist(category.getName())) {
+        if (categoryService.categoryExist(user.getId(), category.getName())) {
             throw new NotFoundMessageException("Имя категории уже занято!");
         }
         categoryService.addCategory(category);

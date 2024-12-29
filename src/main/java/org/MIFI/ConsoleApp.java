@@ -238,5 +238,9 @@ public class ConsoleApp implements CommandLineRunner {
             System.err.println(e.getMessage());
         }
     }
+
+    private void transferMoney(String userName, double money){
+
+    }
 }
 

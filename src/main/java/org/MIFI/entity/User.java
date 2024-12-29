@@ -52,4 +52,7 @@ public class User {
         return categories;
     }
 
+    public Long getId() {
+        return id;
+    }
 }
