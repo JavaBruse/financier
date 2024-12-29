@@ -18,53 +18,29 @@ CREATE TABLE transactions (
     description    varchar(150) not null,
     money          decimal not null,
     type           varchar(36) not null,
-    created        bigint not null
+    created        bigint not null DEFAULT (EXTRACT(EPOCH FROM NOW()) * 1000)::bigint
 );
 
 INSERT INTO users (name, password)
 VALUES ('bob', '123'),
        ('john', '123');
 
---INSERT INTO categories (user_id, name, max_limit)
---VALUES (1, 'Еда', 10000.00),
---       (1, 'Транспорт', 5000.00),
---       (1, 'Учеба', 20000.00),
---       (1, 'Отдых', 15000.00),
---       (2, 'Еда', 12000.00),
---       (2, 'Транспорт', 5000.00),
---       (2, 'Учеба', 20000.00),
---       (2, 'Отдых', 15000.00),
---       (2, 'Зарплата', 12000.00);
---
---INSERT INTO transactions (user_id, category_id, description, type, money,  created)
---VALUES
---    (1, 1, 'Weekly groceries shopping', 'OUT', 500.00, EXTRACT(EPOCH FROM CURRENT_TIMESTAMP)),
---    (2, 8, 'Paycheck', 'IN', 100.00, EXTRACT(EPOCH FROM CURRENT_TIMESTAMP)),
---    (1, 2, 'Bus ticket', 'OUT', 200.00, EXTRACT(EPOCH FROM CURRENT_TIMESTAMP)),
---    (2, 5, 'Monthly transport pass', 'OUT', 300.00, EXTRACT(EPOCH FROM CURRENT_TIMESTAMP)),
---    (1, 3, 'Movie night', 'OUT', 200.00, EXTRACT(EPOCH FROM CURRENT_TIMESTAMP)),
---    (1, 3, 'Concert tickets', 'OUT', 200.00, EXTRACT(EPOCH FROM CURRENT_TIMESTAMP)),
---    (2, 6, 'Electricity bill', 'OUT', 200.00, EXTRACT(EPOCH FROM CURRENT_TIMESTAMP)),
---    (1, 4, 'Water bill', 'OUT', 200.00, EXTRACT(EPOCH FROM CURRENT_TIMESTAMP)),
---    (1, 5, 'Doctor appointment', 'OUT', 200.00, EXTRACT(EPOCH FROM CURRENT_TIMESTAMP)),
---    (2, 7, 'Monthly healthcare subscription', 'OUT', 200.00, EXTRACT(EPOCH FROM CURRENT_TIMESTAMP)),
---    (1, 1, 'Weekly groceries shopping', 'OUT', 500.00, EXTRACT(EPOCH FROM CURRENT_TIMESTAMP)),
---    (2, 8, 'Paycheck', 'IN', 100.00, EXTRACT(EPOCH FROM CURRENT_TIMESTAMP)),
---    (1, 2, 'Bus ticket', 'OUT', 200.00, EXTRACT(EPOCH FROM CURRENT_TIMESTAMP)),
---    (2, 5, 'Monthly transport pass', 'OUT', 300.00, EXTRACT(EPOCH FROM CURRENT_TIMESTAMP)),
---    (1, 3, 'Movie night', 'OUT', 200.00, EXTRACT(EPOCH FROM CURRENT_TIMESTAMP)),
---    (1, 3, 'Concert tickets', 'OUT', 200.00, EXTRACT(EPOCH FROM CURRENT_TIMESTAMP)),
---    (2, 6, 'Electricity bill', 'OUT', 200.00, EXTRACT(EPOCH FROM CURRENT_TIMESTAMP)),
---    (1, 4, 'Water bill', 'OUT', 200.00, EXTRACT(EPOCH FROM CURRENT_TIMESTAMP)),
---    (1, 5, 'Doctor appointment', 'OUT', 200.00, EXTRACT(EPOCH FROM CURRENT_TIMESTAMP)),
---    (2, 7, 'Monthly healthcare subscription', 'OUT', 200.00, EXTRACT(EPOCH FROM CURRENT_TIMESTAMP)),
---    (1, 1, 'Weekly groceries shopping', 'OUT', 500.00, EXTRACT(EPOCH FROM CURRENT_TIMESTAMP)),
---    (2, 8, 'Paycheck', 'IN', 100.00, EXTRACT(EPOCH FROM CURRENT_TIMESTAMP)),
---    (1, 2, 'Bus ticket', 'OUT', 200.00, EXTRACT(EPOCH FROM CURRENT_TIMESTAMP)),
---    (2, 5, 'Monthly transport pass', 'OUT', 300.00, EXTRACT(EPOCH FROM CURRENT_TIMESTAMP)),
---    (1, 3, 'Movie night', 'OUT', 200.00, EXTRACT(EPOCH FROM CURRENT_TIMESTAMP)),
---    (1, 3, 'Concert tickets', 'OUT', 200.00, EXTRACT(EPOCH FROM CURRENT_TIMESTAMP)),
---    (2, 6, 'Electricity bill', 'OUT', 200.00, EXTRACT(EPOCH FROM CURRENT_TIMESTAMP)),
---    (1, 4, 'Water bill', 'OUT', 200.00, EXTRACT(EPOCH FROM CURRENT_TIMESTAMP)),
---    (1, 5, 'Doctor appointment', 'OUT', 200.00, EXTRACT(EPOCH FROM CURRENT_TIMESTAMP)),
---    (2, 7, 'Monthly healthcare subscription', 'OUT', 200.00, EXTRACT(EPOCH FROM CURRENT_TIMESTAMP));
+INSERT INTO categories (user_id, name, max_limit)
+VALUES (1, 'Еда', 4000.00),
+       (1, 'Развлечения', 3000.00),
+       (1, 'Коммунальные услуги', 2500.00),
+       (1, 'Прочие расходы', 10000.00),
+       (1, 'Зарплата', 0.00);
+
+
+
+INSERT INTO transactions (user_id, category_id, description, type, money)
+VALUES
+    (1, 1, 'Купил еды', 'OUT', -300.00),
+    (1, 1, 'Купил еды', 'OUT', -500.00),
+    (1, 2, 'Погулял в клубе', 'OUT', -3000.00),
+    (1, 3, 'Заплатил коммуналку', 'OUT', -3000.00),
+    (1, 4, 'За такси', 'OUT', -1500.00),
+    (1, 5, 'зарплата за январь', 'IN', 20000.00),
+    (1, 5, 'Зарплата за февраль', 'IN', 40000.00),
+    (1, 5, 'Премия', 'IN', 3000.00);
