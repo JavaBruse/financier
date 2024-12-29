@@ -20,5 +20,9 @@ public class CategoryService {
         this.categoryRepository.save(category);
     }
 
+    public boolean categoryExist(String name){
+        return categoryRepository.existsByName(name);
+    }
+
 
 }

@@ -72,6 +72,9 @@ public class Wallet {
     }
 
     public void addCategory(Category category) {
+        if (categoryService.categoryExist(category.getName())) {
+            throw new NotFoundMessageException("Имя категории уже занято!");
+        }
         categoryService.addCategory(category);
     }
 
@@ -126,7 +129,6 @@ public class Wallet {
         } catch (RuntimeException e) {
             throw new NotFoundMessageException(message);
         }
-
     }
 }
 

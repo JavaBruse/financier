@@ -135,7 +135,7 @@ public class ConsoleApp implements CommandLineRunner {
             case "budgets": // Бюджеты по всем категориям
                 budgets();
                 break;
-            case "addc": // добавтиь категорию, лимит 0, условно не выделяет её в отдельную категорию.
+            case "addc": // добавить категорию, лимит 0, условно не выделяет её в отдельную категорию.
                 System.out.print("Имя категории: ");
                 String name = scanner.nextLine();
                 System.out.print("Лимит по категории: ");
