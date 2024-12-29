@@ -41,6 +41,7 @@ public class ConsoleApp implements CommandLineRunner {
                 }
             } catch (RuntimeException e) {
                 System.err.println(e.getMessage());
+                if (authorized) reloadWallet();
                 Thread.sleep(100);
             }
         }
@@ -210,7 +211,7 @@ public class ConsoleApp implements CommandLineRunner {
         System.out.println("Бюджет по категориям: ");
         for (Map.Entry<Category, Double> v : map.entrySet()) {
             if (v.getKey().getLimit() == 0) continue;
-            System.out.println("    "+v.getKey().getName() + ": " + v.getKey().getLimit() +
+            System.out.println("    " + v.getKey().getName() + ": " + v.getKey().getLimit() +
                     " сумма по транзакциям: " + v.getValue() +
                     " итого, осталось: " + (v.getKey().getLimit() + v.getValue()));
         }

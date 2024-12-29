@@ -1,4 +1,8 @@
- 
+Для сборки программы Финансы введите команду:
+
+```shell
+mvn clean install
+```
 
 1. Хранение данных
 
@@ -110,16 +114,13 @@ addc
 Привязать кошелёк к авторизованному пользователю. Кошелёк должен хранить информацию о текущих финансах и всех операциях (доходах и расходах).
 Сохранять установленный бюджет по категориям.
 
-Класс кошеле создан и хранит пользователя, информацию о балансе, балансе по категориям. У каждого пользователя хранится все его категории,
+Класс кошелек создан и хранит пользователя, информацию о балансе, балансе по категориям. В сущности пользователь хранится все его категории,
 у каждой категории все её транзакции.
 ```java
 public class Wallet {
     private User user;
     private double balance;
     private Map<Category, Double> balances = new HashMap<>();
-
-    private final CategoryService categoryService;
-    private final TransactionService transactionService;
 ```
 Бюджет по категориям сохраняется в категориях и называется limit
 ```java
@@ -221,12 +222,50 @@ income
 Весь пользовательский ввод проверяется, если ошибка, то выдает exception, которая перехватывается в самом начале приложения, 
 где печатается причина, и ожидается повторный ввод команды.
 
+```java
+@Override
+    public void run(String... args) throws InterruptedException {
+        System.out.println("Добро пожаловать в приложение Финансы");
+        while (true) {
+            try {
+                if (!authorized) { // если не авторизован, то выводит возможные команды, и отправляет на варинты регистрации, авторизации или вызода из приложения.
+                    printHelp();
+                    entrance();
+                } else { // если авторизован, то работа с кошельком.
+                    worker();
+                }
+            } catch (RuntimeException e) {
+                System.err.println(e.getMessage()); // Выводится ошибка, ввода или по другой причине.
+                Thread.sleep(100); // сон основного потока, т.к. err и out это разные потоки, и без паузы, происходит наложение текста в консоли.
+            }
+        }
+    }
+```
+
 8. Оповещения:
 
 Оповещать пользователя, если превышен лимит бюджета по категории или расходы превысили доходы.
 
 Пользователь будет оповещен, если попытается провести транзакцию по категории, лимит по каторой исчерпан.
-И транзакция проведена не будет!
+
+Есть две ошибки, одна на превышение доходов, над расходами, вторая превышение лимита по категории.
+```java
+public void addTransaction(Transaction transaction) {
+   Double balancesCat = balances.get(transaction.getCategory());
+   Double limitByCat = transaction.getCategory().getLimit();
+   if (balance < Math.abs(transaction.getMoney())) {
+      transactionService.addTransaction(transaction);
+      throw new LimitIsOverException("Расходы превысили доходы, но транзакция проведена");
+   }
+   if (0 <= limitByCat + (balancesCat + transaction.getMoney()) || (limitByCat == 0 && transaction.getMoney() > 0)) {
+      transactionService.addTransaction(transaction);
+   } else {
+      transactionService.addTransaction(transaction);
+      throw new LimitIsOverException("Лимит превышен!, но транзакция проведена.");
+   }
+}
+```
+
 
 9. Сохранение данных:
 
