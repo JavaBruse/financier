@@ -183,6 +183,19 @@ public class ConsoleApp implements CommandLineRunner {
             case "help":
                 printHelp();
                 break;
+            case "trans":
+                System.out.print("Имя пользователя: ");
+                String userName = scanner.nextLine();
+                System.out.print("Сумма перевода: ");
+                double money;
+                try {
+                    money = Double.parseDouble(scanner.nextLine());
+                } catch (RuntimeException e) {
+                    throw new NotFoundMessageException("Некорректная значение денег");
+                }
+                transferMoney(userName, money);
+                reloadWallet();
+                break;
             default:
                 System.err.println("Команда: " + command + " не известна.");
         }
@@ -239,8 +252,13 @@ public class ConsoleApp implements CommandLineRunner {
         }
     }
 
-    private void transferMoney(String userName, double money){
-
+    private void transferMoney(String userName, double money) {
+        if (userService.userExistByName(userName)) {
+            User userFromTransfer = userService.getUser(userName);
+            wallet.transferMoney(userFromTransfer, money);
+        } else {
+            throw new NotFoundMessageException("Ползователь не наеден!");
+        }
     }
 }
 

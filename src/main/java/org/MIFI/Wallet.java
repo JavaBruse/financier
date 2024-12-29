@@ -8,6 +8,7 @@ import org.MIFI.exceptions.NotFoundMessageException;
 import org.MIFI.service.CategoryService;
 import org.MIFI.service.TransactionService;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 
@@ -87,6 +88,7 @@ public class Wallet {
                 throw new LimitIsOverException("Расходы превысили доходы, но транзакция проведена");
             }
             transactionService.addTransaction(transaction);
+            return;
         }
 
         if (balance < Math.abs(transaction.getMoney())) {
@@ -129,6 +131,45 @@ public class Wallet {
         } catch (RuntimeException e) {
             throw new NotFoundMessageException(message);
         }
+    }
+
+    @Transactional
+    public void transferMoney(User userFromTransfer, double money) {
+        if (money > balance) throw new LimitIsOverException("Недостаточно средтсв для перевода");
+        if (money < 0) throw new LimitIsOverException("Нельзя перевести отрицательное число!");
+        Category categoryIN = addCatTransfer(userFromTransfer);
+        Category categoryOUT = addCatTransfer(user);
+
+        Transaction inUser = new Transaction();
+        inUser.setMoney(money);
+        inUser.setCategory(categoryIN);
+        inUser.setUser(userFromTransfer);
+        inUser.setDescription("Перевод от " + user.getName());
+
+        Transaction outUser = new Transaction();
+        outUser.setMoney(0 - money);
+        outUser.setCategory(categoryOUT);
+        outUser.setUser(user);
+        outUser.setDescription("Перевод " + userFromTransfer.getName());
+        addTransaction(inUser);
+        try {
+            addTransaction(outUser);
+        } catch (RuntimeException e) {
+
+        }
+    }
+
+
+    private Category addCatTransfer(User user) {
+
+        if (!categoryService.categoryExist(user.getId(), "Перевод")) {
+            Category category = new Category();
+            category.setName("Перевод");
+            category.setUser(user);
+            category.setLimit(0.);
+            return categoryService.addCategory(category);
+        }
+        return categoryService.getCategoryByNameByUser(user, "Перевод");
     }
 }
 
