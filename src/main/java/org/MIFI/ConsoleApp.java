@@ -213,7 +213,7 @@ public class ConsoleApp implements CommandLineRunner {
             if (v.getKey().getLimit() == 0) continue;
             System.out.println("    " + v.getKey().getName() + ": " + v.getKey().getLimit() +
                     " сумма по транзакциям: " + v.getValue() +
-                    " итого, осталось: " + (v.getKey().getLimit() + v.getValue()));
+                    " итого, " + (v.getKey().getLimit() + v.getValue() >= 0 ? "осталось: " : "лимит превышен на: ") + (v.getKey().getLimit() + v.getValue()));
         }
     }
 
